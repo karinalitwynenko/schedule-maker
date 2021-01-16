@@ -1,68 +1,110 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  padding: 2% 2% 2% 3%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  font-size: calc(10px + 2vmin);
-  color: #05788a;
-  margin-bottom: 4%;
+    height: 10vh;
+    padding: 2% 2% 2% 3%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: calc(10px + 2vmin);
+    margin-bottom: 4%;
+}
 
+.App-header-logo {
+    max-height: 60%;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 .App-schedule {
-  width: 94%;
-  margin: auto auto 20%;
-  border-collapse: collapse;
+    width: 94%;
+    margin: auto auto 20%;
+    border-collapse: collapse;
 }
 
 .App-schedule-header {
-  border-radius: 1%;
-  color: #91972A;
-  border: 1px solid #d9d9d9;
-  font-size: 1.2vw;
+    border-radius: 1%;
+    color: #91972A;
+    border: 1px solid #d9d9d9;
+    font-size: 1.2vw;
 }
 
 .App-schedule-header td {
-  padding: 1%;
+    padding: 1%;
 }
 
 .App-row {
-  width: 100%;
-  height: 80px;
+    width: 100%;
+    height: 80px;
 }
 
 .App-row td {
-  border: 1px solid #d9d9d9;
+    padding: 1px 1% 1px 1%;
+    border: 1px solid #d9d9d9;
+    width: 10vw;
+    text-align: left;
+    color: #565656;
+}
+
+.App-row .App-hour {
+    width: 4vw;
+    text-align: center;
+    color: #91972a;
 }
 
 .App-row td:nth-child(2n) {
-  background-color: #f3f3f3;
+    background-color: #faffee;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.App-color-main {
+    color: #05788a;
+}
+
+.App-hour {
+    font-weight: bold;
+}
+
+.App-button {
+    background-color: white;
+    color: #91972A;
+    border: 1px solid #91972A;
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px 0px #a2a2a2;
+    margin-bottom: 2%;
+    margin-right: 8%;
+    font-size: 1.4vw;
+    padding: 0.4% 1%;
+}
+
+.App-button:hover {
+    box-shadow: 1px 1px 2px 0px #91972A;
+    cursor: pointer;
+}
+
+.App-save-button {
+    float: right;
 }
