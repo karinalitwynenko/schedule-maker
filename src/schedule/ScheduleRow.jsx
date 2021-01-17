@@ -5,9 +5,6 @@ class ScheduleRow extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            value: this.props.value
-        };
     }
 
     render() {
@@ -48,17 +45,11 @@ class ScheduleRow extends React.Component {
             this.props.addSchedule(this.props.hour, day, content);
         }
         else if(content.length !== 0 && content !== this.previousContent) {
-            this.props.updateSchedule(this.props.hour, day, content);
+            this.props.updateSchedule(this.props.scheduleForRow[day], content);
         }
 
         if(!e.relatedTarget || e.relatedTarget.className !== 'App-button') {
             this.props.hideDeleteButton();
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        if(prevProps.value !== this.props.value) {
-            this.setState({value: this.props.value});
         }
     }
 

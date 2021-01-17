@@ -11,7 +11,8 @@ class Schedule extends React.Component {
             deleteButtonVisible: false
         };
         this.deleteItemRef = React.createRef();
-        this.addSchedule = this.addSchedule.bind(this);
+        this.addItem = this.addItem.bind(this);
+        this.updateItem = this.updateItem.bind(this);
         this.displayDeleteButton = this.displayDeleteButton.bind(this);
         this.hideDeleteButton = this.hideDeleteButton.bind(this);
         this.selectItem = this.selectItem.bind(this);
@@ -40,11 +41,8 @@ class Schedule extends React.Component {
         }
 
         return (
-            <div>
-                <button className="App-button App-save-button" onClick={this.saveSchedule}>
-                    Save
-                </button>
-                <table className="App-schedule">
+            <div className="App-schedule" >
+                <table className="App-table">
                     <tbody>
                     <ScheduleHeader/>
                     {hours.map((hour, index) => {
@@ -52,8 +50,8 @@ class Schedule extends React.Component {
                             hour={hour}
                             scheduleForRow={this.state.schedule[index]}
                             key={hour + '' + index}
-                            updateSchedule={this.updateSchedule}
-                            addSchedule={this.addSchedule}
+                            updateSchedule={this.updateItem}
+                            addSchedule={this.addItem}
                             displayDeleteButton={this.displayDeleteButton}
                             hideDeleteButton={this.hideDeleteButton}
                             selectItem={this.selectItem}
@@ -86,10 +84,30 @@ class Schedule extends React.Component {
         return scheduleArray;
     }
 
-    updateSchedule(hour, day, activity) {
+    updateItem(item, newActivity) {
+        const options = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+                {
+                    ...item,
+                    activity: newActivity
+                }
+            )
+        };
+        fetch('http://localhost:8080/schedule', options)
+            .then(response => response.json())
+            .then((data) => {
+                let schedule = this.state.schedule;
+                schedule[item.hour - 7][item.day] = data;
+                this.setState({schedule: schedule});
+
+                console.log("updated item with id " + item.id);
+
+            });
     }
 
-    addSchedule(hour, day, activity) {
+    addItem(hour, day, activity) {
         const options = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -106,19 +124,12 @@ class Schedule extends React.Component {
             .then(response => response.json())
             .then((data) => {
                 let schedule = this.state.schedule;
-                schedule[hour - 7][day] = {
-                    id: data,
-                    activity: activity,
-                    hour: hour,
-                    day: day
-                }
-
-                console.log(schedule[hour - 7][day])
+                schedule[hour - 7][day] = data;
                 this.setState({schedule: schedule});
             });
     }
 
-    displayDeleteButton(item) {
+    displayDeleteButton() {
         this.deleteItemRef.current.classList.remove('App-hidden');
     }
 
@@ -141,11 +152,12 @@ class Schedule extends React.Component {
                     let schedule = this.state.schedule;
                     schedule[this.state.selectedItem.hour - 7][this.state.selectedItem.day].id = -1;
                     schedule[this.state.selectedItem.hour - 7][this.state.selectedItem.day].activity = '';
-
                     this.setState({schedule: schedule});
+                    this.hideDeleteButton();
 
             });
     }
+
 }
 
 export default Schedule;
