@@ -5,46 +5,60 @@ class ScheduleRow extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            value: this.props.value
+        };
     }
 
     render() {
-        let daysOfTheWeek = [];
-        for (let i = 0; i < 7; i++) {
-            daysOfTheWeek[i] = i;
-        }
-
         return (
             <tr className='App-row' >
                 <td className='App-hour' key={this.props.hour}>
                     {this.props.hour}
                 </td>
-                {daysOfTheWeek.map((day) => {
-                    return <td contentEditable="true"
-                               key={this.props.hour + day}
-                               onFocus={(e) => this.handleOnFocus(e)}
-
+                {this.props.scheduleForRow.map((item, day) => {
+                    return <td
+                               contentEditable='true'
+                               key={this.props.hour + '' + day}
+                               onFocus={(e) => this.handleOnFocus(e, day)}
                                onBlur={(e) => this.handleOnBlur(e, day)}>
-                        {this.props.rowData === undefined ? "" : this.props.rowData.get(day)}
 
+                        {item.activity}
                     </td>
-                })}
+                    })
+                }
             </tr>
 
         );
     }
 
-    handleOnFocus(e) {
-        this.previousContent = e.target.innerHTML;
+    handleOnFocus(e, day) {
+        this.previousContent = e.target.innerText.trim();
+        // if item id is specified, delete option should be available
+        if(this.props.scheduleForRow[day].id !== undefined) {
+            this.props.selectItem(this.props.scheduleForRow[day]);
+            this.props.displayDeleteButton();
+        }
     }
 
     handleOnBlur(e, day) {
-        if(this.previousContent.length === 0 && e.target.innerHTML.length !== 0) {
-            this.props.addSchedule(this.props.hour, day, e.target.innerHTML);
-        }
-        else if(e.target.innerHTML.length !== 0 && e.target.innerHTML !== this.previousContent) {
-            this.props.updateSchedule(this.props.hour, day, e.target.innerHTML);
-            console.log("changed");
+        let content = e.target.innerText.trim();
 
+        if(this.previousContent.length === 0 && content.length !== 0) {
+            this.props.addSchedule(this.props.hour, day, content);
+        }
+        else if(content.length !== 0 && content !== this.previousContent) {
+            this.props.updateSchedule(this.props.hour, day, content);
+        }
+
+        if(!e.relatedTarget || e.relatedTarget.className !== 'App-button') {
+            this.props.hideDeleteButton();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.value !== this.props.value) {
+            this.setState({value: this.props.value});
         }
     }
 

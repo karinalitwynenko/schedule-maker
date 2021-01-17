@@ -61,6 +61,11 @@
     color: #565656;
 }
 
+.App-row td:hover {
+    background-color: #fffbeb;
+    color: #91972a;
+}
+
 .App-row .App-hour {
     width: 4vw;
     text-align: center;
@@ -69,6 +74,11 @@
 
 .App-row td:nth-child(2n) {
     background-color: #faffee;
+}
+
+.App-row td:nth-child(2n):hover {
+    background-color: #fffbeb;
+    color: #91972a;
 }
 
 @keyframes App-logo-spin {
@@ -84,18 +94,12 @@
     color: #05788a;
 }
 
-.App-hour {
-    font-weight: bold;
-}
-
 .App-button {
     background-color: white;
     color: #91972A;
     border: 1px solid #91972A;
     border-radius: 4px;
     box-shadow: 1px 1px 2px 0px #a2a2a2;
-    margin-bottom: 2%;
-    margin-right: 8%;
     font-size: 1.4vw;
     padding: 0.4% 1%;
 }
@@ -106,5 +110,31 @@
 }
 
 .App-save-button {
+    margin-bottom: 2%;
+    margin-right: 8%;
     float: right;
 }
+
+.App-delete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10%;
+    background-color: white;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    box-shadow: 1px -2px 2px 0px #dfdfdf;
+    transition: all 0.4s;
+}
+
+.App-delete img {
+    max-height: 60%;
+}
+
+.App-hidden {
+    visibility: hidden;
+    transform: translateY(100%);
+}
+
+
