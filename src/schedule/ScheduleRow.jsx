@@ -15,6 +15,7 @@ class ScheduleRow extends React.Component {
                 </td>
                 {this.props.scheduleForRow.map((item, day) => {
                     return <td
+                               suppressContentEditableWarning='true'
                                contentEditable='true'
                                key={this.props.hour + '' + day}
                                onFocus={(e) => this.handleOnFocus(e, day)}

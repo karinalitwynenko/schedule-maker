@@ -1,15 +1,16 @@
 import ScheduleHeader from './ScheduleHeader'
 import ScheduleRow from './ScheduleRow.jsx';
 import React from 'react';
+import Api from '../Api'
 
 class Schedule extends React.Component {
     constructor(props) {
         super(props)
-        let schedule = new Array(14).fill([]).map(() => new Array(7).fill({}));
         this.state = {
-            schedule: schedule,
+            schedule: new Array(14).fill([]).map(() => new Array(7).fill({})),
             deleteButtonVisible: false
         };
+
         this.deleteItemRef = React.createRef();
         this.addItem = this.addItem.bind(this);
         this.updateItem = this.updateItem.bind(this);
@@ -17,21 +18,8 @@ class Schedule extends React.Component {
         this.hideDeleteButton = this.hideDeleteButton.bind(this);
         this.selectItem = this.selectItem.bind(this);
         this.deleteSelectedItem = this.deleteSelectedItem.bind(this);
-    }
-
-    componentDidMount() {
-        fetch('http://localhost:8080/schedule/1')
-            .then(response => response.json())
-            .then((data) => {
-                this.setState(
-                    {
-                        schedule: this.processScheduleData(data),
-                        selectedItem: null
-                        }
-                    )
-
-            })
-            .catch(console.log)
+        this.fetchSchedule = this.fetchSchedule.bind(this);
+        this.clearScheduleData = this.clearScheduleData.bind(this);
     }
 
     render() {
@@ -61,7 +49,6 @@ class Schedule extends React.Component {
                 </table>
                 <div className="App-delete App-hidden"
                      ref={this.deleteItemRef}>
-                    {/*<img src={process.env.PUBLIC_URL + '/garbage.svg'}/>*/}
                     <button
                         onClick={this.deleteSelectedItem}
                         className="App-button">
@@ -73,7 +60,7 @@ class Schedule extends React.Component {
     }
 
     processScheduleData(data) {
-        let scheduleArray = new Array(14).fill([]).map(() => new Array(7).fill({}));
+        let scheduleArray = new Array(14).fill([]).map(() => new Array(7).fill({activity: ''}));
 
         data.sort((a, b) => {return a.hour - b.hour});
 
@@ -85,9 +72,16 @@ class Schedule extends React.Component {
     }
 
     updateItem(item, newActivity) {
+        let token = Api.getToken();
+        if(token === undefined)
+            return;
+
         const options = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
             body: JSON.stringify(
                 {
                     ...item,
@@ -95,32 +89,39 @@ class Schedule extends React.Component {
                 }
             )
         };
-        fetch('http://localhost:8080/schedule', options)
+        fetch('/schedules', options)
             .then(response => response.json())
             .then((data) => {
                 let schedule = this.state.schedule;
                 schedule[item.hour - 7][item.day] = data;
                 this.setState({schedule: schedule});
 
-                console.log("updated item with id " + item.id);
+                console.log("Updated item with id " + item.id);
 
             });
     }
 
     addItem(hour, day, activity) {
+        let token = Api.getToken();
+        if(token === undefined)
+            return;
+
         const options = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
             body: JSON.stringify(
                 {
-                    userId: 1,
+                    username: this.props.username,
                     day: day,
                     hour: hour,
                     activity: activity
                     }
                 )
         };
-        fetch('http://localhost:8080/schedule', options)
+        fetch('/schedules', options)
             .then(response => response.json())
             .then((data) => {
                 let schedule = this.state.schedule;
@@ -142,20 +143,56 @@ class Schedule extends React.Component {
     }
 
     deleteSelectedItem() {
+        let token = Api.getToken();
+        if(token === undefined)
+            return;
+
         const options = {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
         };
-        fetch('http://localhost:8080/schedule/' + this.state.selectedItem.id, options)
+        fetch('/schedules/' + this.state.selectedItem.id, options)
             .then(response => {
-                    console.log("removed item with id " + this.state.selectedItem.id);
+                    console.log("Removed item with id " + this.state.selectedItem.id);
                     let schedule = this.state.schedule;
                     schedule[this.state.selectedItem.hour - 7][this.state.selectedItem.day].id = -1;
                     schedule[this.state.selectedItem.hour - 7][this.state.selectedItem.day].activity = '';
                     this.setState({schedule: schedule});
                     this.hideDeleteButton();
-
             });
+    }
+
+
+    fetchSchedule() {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + Api.getToken()
+            }
+        };
+        fetch('/schedules/' + this.props.username, options)
+            .then(response => response.json())
+            .then((data) => {
+                this.setState(
+                    {
+                        schedule: this.processScheduleData(data),
+                        selectedItem: null
+                    }
+                )
+                console.log("Fetched " + data.length + " row(s) for user: " + this.props.username);
+
+            })
+            .catch(console.log)
+    }
+
+    clearScheduleData() {
+        this.setState({
+            schedule: new Array(14).fill([]).map(() => new Array(7).fill({}))
+        })
     }
 
 }
