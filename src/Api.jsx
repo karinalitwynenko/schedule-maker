@@ -9,33 +9,47 @@ class Api {
         };
 
         fetch('/public/users/login', options)
-            .then(response => response.text())
+            .then(response => {
+                if(!response.ok)
+                    throw Error(response.statusText)
+                else
+                    return response.text()
+            })
             .then((token) => {
-                console.log('token = '+ token)
-                document.cookie = `token=${token};max-age=1800000`
+                document.cookie = `token=${token};max-age=1800`
                 localStorage.setItem('username', login);
-
                 callback('success');
+            })
+            .catch(function(error) {
+                callback('failed');
+                console.log(error);
             });
     }
 
-    static register(login, password, email, callback) {
+    static register(login, password, callback) {
         const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `username=${login}&password=${password}&email=${email}`
+            body: `username=${login}&password=${password}`
         };
 
         fetch('/public/users/register', options)
-            .then(response => response.text())
+            .then(response => {
+                if(!response.ok)
+                    throw Error(response.statusText)
+                else
+                    return  response.text()
+            })
             .then((token) => {
-                console.log('token = '+ token)
-                document.cookie = `token=${token};max-age=1800000`
+                document.cookie = `token=${token};max-age=1800`
                 localStorage.setItem('username', login);
-
                 callback('success');
+            })
+            .catch(function(error) {
+                callback('failed');
+                console.log(error);
             });
     }
 

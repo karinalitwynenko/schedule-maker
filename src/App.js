@@ -9,15 +9,15 @@ class App extends React.Component {
         this.state = {
             isDialogVisible: false,
             login: "",
-            email: "",
             password: "",
             loggedIn: false,
-            username: "" // logged user login
+            username: "", // logged user login
+            error: "" // displayed form validation error
         };
 
         this.scheduleRef = React.createRef();
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.logInResultCallback = this.logInResultCallback.bind(this);
+        this.authResultCallback = this.authResultCallback.bind(this);
         this.logOut = this.logOut.bind(this);
 
     }
@@ -44,12 +44,28 @@ class App extends React.Component {
             });
         }
 
+        const validate = () => {
+             if(!/^[0-9a-zA-Z_-]{3,30}$/.test(this.state.login)) {
+                this.setState({error: "Incorrect login format"})
+                return false;
+             }
+            else if(!/^[a-zA-Z0-9@#$%^&+=]{3,30}$/.test(this.state.password)) {
+                this.setState({error: "Incorrect password format"})
+                return false;
+            }
+
+            this.setState({error: ""})
+            return true;
+        }
+
         const authenticate = () => {
-            Api.logIn(this.state.login, this.state.password, this.logInResultCallback);
+            if(validate())
+                Api.logIn(this.state.login, this.state.password, this.authResultCallback);
         }
 
         const register = () => {
-            Api.register(this.state.login, this.state.password, this.state.email, this.logInResultCallback);
+            if(validate())
+                Api.register(this.state.login, this.state.password, this.authResultCallback);
         }
 
         return (
@@ -85,29 +101,24 @@ class App extends React.Component {
                     <div className="App-form-container">
                         <form>
                             <label>
-                                <span className="App-form-label">Login</span>
+                                <span className="App-form-label App-center">Login</span>
                                 <input
                                     autoComplete="on"
                                     type="text"
                                     name="login"
                                     value={this.state.login} onChange={(e) => this.handleInputChange(e, 'login')}/>
                             </label>
-                            <label className={`${this.state.dialogType === "register" ? "" : "App-display-none"}`}>
-                                <span className="App-form-label">E-mail</span>
-                                <input
-                                    autoComplete="on"
-                                    type="email"
-                                    name="email"
-                                    value={this.state.email} onChange={(e) => this.handleInputChange(e, 'email')}/>
-                            </label>
                             <label>
-                                <span className="App-form-label">Password</span>
+                                <span className="App-form-label App-center">Password</span>
                                 <input
                                     autoComplete="on"
                                     type="password"
                                     name="password"
                                     value={this.state.password} onChange={(e) => this.handleInputChange(e, 'password')}/>
                             </label>
+                            <div className={`App-error ${this.state.error.length === 0 ? 'App-hidden' : ''}`}>
+                                {this.state.error}
+                            </div>
                         </form>
                         <div className="App-justify-end">
                             <button
@@ -140,21 +151,21 @@ class App extends React.Component {
                 break;
             default:
         }
-
     }
 
-    logInResultCallback(result) {
-        if(result ==='success') {
+    authResultCallback(result) {
+        if(result === 'success') {
             this.setState({
                 username: this.state.login,
-                loggedIn: true
-            });
-
-            this.setState({isDialogVisible: false});
-            this.scheduleRef.current.fetchSchedule();
+                loggedIn: true,
+                isDialogVisible: false
+            }, () => this.scheduleRef.current.fetchSchedule());
+        }
+        else if(this.state.dialogType === 'register') {
+            window.alert("Could not create user account.");
         }
         else {
-            window.alert("Incorrect account data.");
+            window.alert("Incorrect login or password.");
         }
     }
 

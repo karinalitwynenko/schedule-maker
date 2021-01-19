@@ -61,7 +61,7 @@
 }
 
 .App-row td {
-    padding: 1px 1% 1px 1%;
+    padding: 1px;
     border: 1px solid #d9d9d9;
     width: 10vw;
     max-width: 10vw;
@@ -99,7 +99,7 @@
     border: 1px solid #91972A;
     border-radius: 2px;
     box-shadow: 1px 1px 2px 0px #a2a2a2;
-    padding: 8px 14px;
+    padding: 4px 14px;
 }
 
 .App-button:hover {
@@ -150,7 +150,7 @@
     flex-direction: column;
     background-color: white;
     border-radius: 1%;
-    padding: 10% 8%;
+    padding: 8% 4%;
 }
 
 .App-form-container label {
@@ -160,13 +160,22 @@
     justify-content: center;
 }
 
+.App-form-container form {
+    padding: 2%;
+}
+
 .App-form-label {
     width: 28%;
+    font-size: 68%;
 }
 
 .App-form-container input {
     width: 68%;
     margin-left: 2%;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid grey;
+    color: #646464;
 }
 
 .App-space-around {
@@ -186,6 +195,16 @@
 
 .App-display-none {
     display: none !important;
+}
+
+.App-error {
+    font-size: 70%;
+    color: #ff5959;
+    text-align: end;
+}
+
+.App-hidden {
+    visibility: hidden;
 }
 
 

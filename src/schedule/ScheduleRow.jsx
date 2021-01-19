@@ -3,10 +3,6 @@ import React from 'react';
 class ScheduleRow extends React.Component {
     previousContent = '';
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <tr className='App-row' >

@@ -97,7 +97,6 @@ class Schedule extends React.Component {
                 this.setState({schedule: schedule});
 
                 console.log("Updated item with id " + item.id);
-
             });
     }
 
@@ -183,7 +182,7 @@ class Schedule extends React.Component {
                         selectedItem: null
                     }
                 )
-                console.log("Fetched " + data.length + " row(s) for user: " + this.props.username);
+                console.log("Fetched " + data.length + " item(s) for user: " + this.props.username);
 
             })
             .catch(console.log)
