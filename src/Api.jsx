@@ -16,7 +16,7 @@ class Api {
                     return response.text()
             })
             .then((token) => {
-                document.cookie = `token=${token};max-age=1800`
+                document.cookie = `token=${token}; expires=${new Date(new Date().getTime() + 30 * 1000 * 60)}`
                 localStorage.setItem('username', login);
                 callback('success');
             })
@@ -43,7 +43,7 @@ class Api {
                     return  response.text()
             })
             .then((token) => {
-                document.cookie = `token=${token};max-age=1800`
+                document.cookie = `token=${token}; expires=${new Date(new Date().getTime() + 30 * 1000 * 60)}`
                 localStorage.setItem('username', login);
                 callback('success');
             })
